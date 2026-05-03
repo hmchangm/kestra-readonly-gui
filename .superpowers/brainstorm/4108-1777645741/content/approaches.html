@@ -1,0 +1,63 @@
+<h2>3 Architectural Approaches</h2>
+<p class="subtitle">How should OIDC authentication flow between React, Quarkus BE, and Keycloak?</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>SPA OIDC — React manages tokens (PKCE)</h3>
+      <p>React handles the full OIDC Authorization Code + PKCE flow directly with Keycloak. After login, the FE stores the access token and sends it as a <code>Bearer</code> header on every API call. Quarkus BE validates the JWT on each request using <code>quarkus-oidc</code> (stateless).</p>
+      <div style="margin: 12px 0; font-family: monospace; font-size: 13px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px; line-height: 1.8;">
+        Browser → Keycloak (PKCE login)<br>
+        Browser ← access_token + id_token<br>
+        Browser → Quarkus BE (Bearer token)<br>
+        Quarkus BE → MySQL (reads)<br>
+        Quarkus BE → Kestra API (retrigger)
+      </div>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul><li>Standard React SPA pattern</li><li>Stateless BE — easy to scale</li><li>Simple Quarkus config (just JWT validation)</li><li>Well-documented with Keycloak</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Token lives in browser memory/storage</li><li>FE must handle token refresh</li></ul></div>
+      </div>
+      <p style="margin-top:10px; color: #4ade80; font-weight: 600;">⭐ Recommended</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>BFF — Quarkus BE owns the OIDC session</h3>
+      <p>Quarkus BE is the registered OIDC client. The browser redirects to Keycloak via Quarkus, which handles the Authorization Code Flow server-side and issues a session cookie to React. Tokens never reach the browser.</p>
+      <div style="margin: 12px 0; font-family: monospace; font-size: 13px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px; line-height: 1.8;">
+        Browser → Quarkus BE → Keycloak (login)<br>
+        Quarkus BE ← access_token (stored server-side)<br>
+        Browser ← session cookie<br>
+        Browser → Quarkus BE (cookie)<br>
+        Quarkus BE → MySQL (reads)<br>
+        Quarkus BE → Kestra API (retrigger)
+      </div>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul><li>Tokens never exposed to browser</li><li>More secure — no XSS token theft risk</li><li>BE controls session lifecycle</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Stateful BE sessions (fine for 5–20 users)</li><li>More complex Quarkus OIDC config</li><li>CORS + cookie handling trickier in dev</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Hybrid — React login, Quarkus token exchange</h3>
+      <p>React logs in via Keycloak PKCE (same as A), but sends only the <em>id_token</em> to Quarkus BE. Quarkus performs a token exchange with Keycloak to get a service-level access token for calling Kestra API. User identity comes from the validated id_token.</p>
+      <div style="margin: 12px 0; font-family: monospace; font-size: 13px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px; line-height: 1.8;">
+        Browser → Keycloak (PKCE login)<br>
+        Browser ← id_token + access_token<br>
+        Browser → Quarkus BE (id_token)<br>
+        Quarkus BE → Keycloak (token exchange)<br>
+        Quarkus BE → MySQL + Kestra API
+      </div>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul><li>Service account separation — Kestra sees Quarkus, not the user</li><li>Fine-grained scopes per service</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Token exchange requires Keycloak Enterprise or specific config</li><li>Most complex of the three</li><li>Overkill for an internal tool with 20 users</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>

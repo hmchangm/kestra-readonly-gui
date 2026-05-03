@@ -1,0 +1,113 @@
+<h2>Execution Detail — Chart Options</h2>
+<p class="subtitle">Which chart(s) should appear on the execution detail page?</p>
+
+<div class="options" data-multiselect>
+
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Task Run Gantt / Timeline</h3>
+      <p>Horizontal bars showing when each task started and ended, colored by status. Instantly shows which tasks ran in parallel, which blocked others, and where time was spent.</p>
+      <div style="margin-top:14px; font-size:12px;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+          <div style="width:80px; color:#94a3b8; text-align:right; font-size:11px;">extract</div>
+          <div style="position:relative; flex:1; height:18px; background:#1e293b; border-radius:3px;">
+            <div style="position:absolute;left:0%;width:30%;height:100%;background:#4ade80;border-radius:3px;"></div>
+          </div>
+          <div style="font-size:11px;color:#94a3b8;">12s</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+          <div style="width:80px; color:#94a3b8; text-align:right; font-size:11px;">validate</div>
+          <div style="position:relative; flex:1; height:18px; background:#1e293b; border-radius:3px;">
+            <div style="position:absolute;left:30%;width:15%;height:100%;background:#4ade80;border-radius:3px;"></div>
+          </div>
+          <div style="font-size:11px;color:#94a3b8;">6s</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+          <div style="width:80px; color:#94a3b8; text-align:right; font-size:11px;">transform</div>
+          <div style="position:relative; flex:1; height:18px; background:#1e293b; border-radius:3px;">
+            <div style="position:absolute;left:45%;width:35%;height:100%;background:#4ade80;border-radius:3px;"></div>
+          </div>
+          <div style="font-size:11px;color:#94a3b8;">14s</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div style="width:80px; color:#94a3b8; text-align:right; font-size:11px;">load</div>
+          <div style="position:relative; flex:1; height:18px; background:#1e293b; border-radius:3px;">
+            <div style="position:absolute;left:80%;width:20%;height:100%;background:#f87171;border-radius:3px;"></div>
+          </div>
+          <div style="font-size:11px;color:#f87171;">FAILED 8s</div>
+        </div>
+        <div style="margin-top:6px; font-size:11px; color:#64748b;">← start &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; end →</div>
+      </div>
+      <p style="margin-top:10px; color: #4ade80; font-weight: 600;">⭐ Most useful for debugging</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Task Duration Bar Chart</h3>
+      <p>Horizontal bar chart sorted by duration (longest first). Quickly shows which tasks are the bottleneck. Good for performance analysis.</p>
+      <div style="margin-top:14px; font-size:12px;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+          <div style="width:80px; color:#94a3b8; text-align:right; font-size:11px;">transform</div>
+          <div style="flex:1; height:16px; background:#6366f1; border-radius:3px; width:70%;"></div>
+          <div style="font-size:11px;color:#94a3b8;">14s</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+          <div style="width:80px; color:#94a3b8; text-align:right; font-size:11px;">extract</div>
+          <div style="flex:1; height:16px; background:#6366f1; border-radius:3px; width:60%;"></div>
+          <div style="font-size:11px;color:#94a3b8;">12s</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+          <div style="width:80px; color:#f87171; text-align:right; font-size:11px;">load ✗</div>
+          <div style="flex:1; height:16px; background:#f87171; border-radius:3px; width:40%;"></div>
+          <div style="font-size:11px;color:#f87171;">8s</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div style="width:80px; color:#94a3b8; text-align:right; font-size:11px;">validate</div>
+          <div style="flex:1; height:16px; background:#6366f1; border-radius:3px; width:30%;"></div>
+          <div style="font-size:11px;color:#94a3b8;">6s</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Execution KPI Cards</h3>
+      <p>Summary cards at the top of the detail page: total duration, number of tasks, tasks succeeded, tasks failed. Same card style as the list page for visual consistency.</p>
+      <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+        <div style="background:rgba(99,102,241,0.15);border:1px solid #6366f1;border-radius:8px;padding:10px 16px;text-align:center;">
+          <div style="font-size:20px;font-weight:700;color:#e2e8f0;">40s</div>
+          <div style="font-size:11px;color:#94a3b8;">Total duration</div>
+        </div>
+        <div style="background:rgba(74,222,128,0.1);border:1px solid #4ade80;border-radius:8px;padding:10px 16px;text-align:center;">
+          <div style="font-size:20px;font-weight:700;color:#4ade80;">3 / 4</div>
+          <div style="font-size:11px;color:#94a3b8;">Tasks passed</div>
+        </div>
+        <div style="background:rgba(248,113,113,0.1);border:1px solid #f87171;border-radius:8px;padding:10px 16px;text-align:center;">
+          <div style="font-size:20px;font-weight:700;color:#f87171;">1</div>
+          <div style="font-size:11px;color:#94a3b8;">Tasks failed</div>
+        </div>
+        <div style="background:rgba(245,158,11,0.1);border:1px solid #f59e0b;border-radius:8px;padding:10px 16px;text-align:center;">
+          <div style="font-size:20px;font-weight:700;color:#f59e0b;">FAILED</div>
+          <div style="font-size:11px;color:#94a3b8;">Final state</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="d" onclick="toggleSelect(this)">
+    <div class="letter">D</div>
+    <div class="content">
+      <h3>C + A — KPI Cards + Gantt timeline</h3>
+      <p>KPI cards for instant summary, Gantt below for task-level timing and status. Best combination for an ops team diagnosing a failed job.</p>
+      <p style="margin-top:8px; color: #4ade80; font-weight: 600;">⭐ Recommended</p>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:20px;">You can select multiple. Click to toggle.</p>

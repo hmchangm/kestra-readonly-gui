@@ -1,0 +1,73 @@
+<h2>System Architecture</h2>
+<p class="subtitle">Kestra Read-Only GUI — overall component layout</p>
+
+<div style="display: flex; flex-direction: column; gap: 24px; max-width: 860px; margin: 0 auto;">
+
+  <!-- Row 1: Browser -->
+  <div style="display: flex; justify-content: center;">
+    <div style="background: rgba(99,102,241,0.15); border: 2px solid #6366f1; border-radius: 12px; padding: 16px 40px; text-align: center; min-width: 220px;">
+      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #a5b4fc; margin-bottom: 4px;">Browser</div>
+      <div style="font-weight: 700; font-size: 16px;">React SPA</div>
+      <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Vite · TypeScript · React Query<br>oidc-client-ts (PKCE flow)</div>
+    </div>
+  </div>
+
+  <!-- Arrows row -->
+  <div style="display: flex; justify-content: center; gap: 120px; color: #64748b; font-size: 12px; text-align: center;">
+    <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
+      <div style="color: #f59e0b;">⟵ OIDC redirect/token</div>
+      <div style="color: #f59e0b;">OIDC login ⟶</div>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
+      <div style="color: #34d399;">⟵ JSON responses</div>
+      <div style="color: #34d399;">Bearer JWT ⟶</div>
+    </div>
+  </div>
+
+  <!-- Row 2: Keycloak + Quarkus BE -->
+  <div style="display: flex; justify-content: center; gap: 60px;">
+    <div style="background: rgba(245,158,11,0.12); border: 2px solid #f59e0b; border-radius: 12px; padding: 16px 28px; text-align: center; min-width: 180px;">
+      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #fcd34d; margin-bottom: 4px;">Auth Provider</div>
+      <div style="font-weight: 700; font-size: 16px;">Keycloak</div>
+      <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Self-hosted<br>PKCE + JWKS endpoint</div>
+    </div>
+    <div style="background: rgba(52,211,153,0.12); border: 2px solid #34d399; border-radius: 12px; padding: 16px 28px; text-align: center; min-width: 220px;">
+      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #6ee7b7; margin-bottom: 4px;">Backend</div>
+      <div style="font-weight: 700; font-size: 16px;">Quarkus Kotlin</div>
+      <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">quarkus-oidc (JWT validation)<br>RESTEasy Reactive · Kotlin</div>
+    </div>
+  </div>
+
+  <!-- Arrows row 2 -->
+  <div style="display: flex; justify-content: center; padding-left: 240px; gap: 80px; color: #64748b; font-size: 12px; text-align: center;">
+    <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
+      <div style="color: #818cf8;">Direct SQL reads ⟶</div>
+      <div style="color: #818cf8;">Audit log writes ⟶</div>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
+      <div style="color: #f87171;">POST /executions ⟶</div>
+    </div>
+  </div>
+
+  <!-- Row 3: MySQL + Kestra -->
+  <div style="display: flex; justify-content: center; gap: 60px; padding-left: 0px;">
+    <div style="background: rgba(129,140,248,0.12); border: 2px solid #818cf8; border-radius: 12px; padding: 16px 28px; text-align: center; min-width: 220px;">
+      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #c7d2fe; margin-bottom: 4px;">Database</div>
+      <div style="font-weight: 700; font-size: 16px;">MySQL</div>
+      <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Kestra tables (read-only)<br>+ <span style="color:#34d399">kestra_retrigger_audit</span> (new)</div>
+    </div>
+    <div style="background: rgba(248,113,113,0.12); border: 2px solid #f87171; border-radius: 12px; padding: 16px 28px; text-align: center; min-width: 180px;">
+      <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #fca5a5; margin-bottom: 4px;">Workflow Engine</div>
+      <div style="font-weight: 700; font-size: 16px;">Kestra</div>
+      <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">REST API only<br>(POST /executions)</div>
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div style="display:flex; justify-content:center; gap:24px; margin-top: 8px; flex-wrap: wrap;">
+    <div style="font-size:12px; color:#f59e0b;">■ Auth flow</div>
+    <div style="font-size:12px; color:#34d399;">■ API calls (JWT-protected)</div>
+    <div style="font-size:12px; color:#818cf8;">■ DB access</div>
+    <div style="font-size:12px; color:#f87171;">■ Kestra API (retrigger)</div>
+  </div>
+</div>

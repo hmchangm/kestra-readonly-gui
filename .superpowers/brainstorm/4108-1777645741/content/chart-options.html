@@ -1,0 +1,125 @@
+<h2>Execution List — Chart Options</h2>
+<p class="subtitle">Which chart(s) would be most useful at the top of the execution list?</p>
+
+<div class="options" data-multiselect>
+
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Status Donut / Pie — last 24h</h3>
+      <p>Shows proportion of SUCCESS / FAILED / RUNNING / KILLED in the last 24 hours at a glance.</p>
+      <div style="display:flex; align-items:center; gap:24px; margin-top:12px;">
+        <!-- Fake donut -->
+        <div style="position:relative; width:80px; height:80px;">
+          <svg viewBox="0 0 36 36" style="width:80px;height:80px;transform:rotate(-90deg)">
+            <circle cx="18" cy="18" r="15.9" fill="none" stroke="#1e293b" stroke-width="3.8"/>
+            <circle cx="18" cy="18" r="15.9" fill="none" stroke="#4ade80" stroke-width="3.8" stroke-dasharray="55 45" stroke-dashoffset="0"/>
+            <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f87171" stroke-width="3.8" stroke-dasharray="25 75" stroke-dashoffset="-55"/>
+            <circle cx="18" cy="18" r="15.9" fill="none" stroke="#60a5fa" stroke-width="3.8" stroke-dasharray="12 88" stroke-dashoffset="-80"/>
+            <circle cx="18" cy="18" r="15.9" fill="none" stroke="#94a3b8" stroke-width="3.8" stroke-dasharray="8 92" stroke-dashoffset="-92"/>
+          </svg>
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:11px;font-weight:700;color:#e2e8f0;">100</div>
+        </div>
+        <div style="font-size:12px; line-height:2;">
+          <div><span style="color:#4ade80">■</span> SUCCESS 55</div>
+          <div><span style="color:#f87171">■</span> FAILED 25</div>
+          <div><span style="color:#60a5fa">■</span> RUNNING 12</div>
+          <div><span style="color:#94a3b8">■</span> KILLED 8</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Timeline Bar Chart — executions per hour</h3>
+      <p>Shows execution volume over the last 24h, stacked by status. Useful for spotting failure spikes at a specific time.</p>
+      <div style="margin-top:12px; display:flex; align-items:flex-end; gap:4px; height:60px;">
+        <!-- Fake stacked bars -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:1px;width:16px;">
+          <div style="background:#4ade80;width:16px;height:28px;border-radius:2px 2px 0 0;"></div>
+          <div style="background:#f87171;width:16px;height:8px;"></div>
+          <div style="background:#60a5fa;width:16px;height:4px;border-radius:0 0 2px 2px;"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:1px;width:16px;">
+          <div style="background:#4ade80;width:16px;height:20px;border-radius:2px 2px 0 0;"></div>
+          <div style="background:#f87171;width:16px;height:14px;"></div>
+          <div style="background:#60a5fa;width:16px;height:3px;border-radius:0 0 2px 2px;"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:1px;width:16px;">
+          <div style="background:#4ade80;width:16px;height:35px;border-radius:2px 2px 0 0;"></div>
+          <div style="background:#f87171;width:16px;height:20px;"></div>
+          <div style="background:#60a5fa;width:16px;height:5px;border-radius:0 0 2px 2px;"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:1px;width:16px;">
+          <div style="background:#4ade80;width:16px;height:15px;border-radius:2px 2px 0 0;"></div>
+          <div style="background:#f87171;width:16px;height:5px;"></div>
+          <div style="background:#60a5fa;width:16px;height:2px;border-radius:0 0 2px 2px;"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:1px;width:16px;">
+          <div style="background:#4ade80;width:16px;height:40px;border-radius:2px 2px 0 0;"></div>
+          <div style="background:#f87171;width:16px;height:10px;"></div>
+          <div style="background:#60a5fa;width:16px;height:6px;border-radius:0 0 2px 2px;"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:1px;width:16px;">
+          <div style="background:#4ade80;width:16px;height:30px;border-radius:2px 2px 0 0;"></div>
+          <div style="background:#f87171;width:16px;height:18px;"></div>
+          <div style="background:#60a5fa;width:16px;height:4px;border-radius:0 0 2px 2px;"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:1px;width:16px;">
+          <div style="background:#4ade80;width:16px;height:22px;border-radius:2px 2px 0 0;"></div>
+          <div style="background:#f87171;width:16px;height:6px;"></div>
+          <div style="background:#60a5fa;width:16px;height:8px;border-radius:0 0 2px 2px;"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:1px;width:16px; opacity:0.5;">
+          <div style="background:#60a5fa;width:16px;height:12px;border-radius:2px;"></div>
+        </div>
+        <div style="margin-left:8px; font-size:11px; line-height:2; align-self:center;">
+          <div><span style="color:#4ade80">■</span> SUCCESS</div>
+          <div><span style="color:#f87171">■</span> FAILED</div>
+          <div><span style="color:#60a5fa">■</span> RUNNING</div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:#64748b;margin-top:4px;">← 24h ago &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; now →</div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>KPI Summary Cards — no chart</h3>
+      <p>4 number cards at the top: Total today, Success rate %, Currently running, Failed today. Fast to read, no charting library needed.</p>
+      <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+        <div style="background:rgba(99,102,241,0.15);border:1px solid #6366f1;border-radius:8px;padding:10px 16px;text-align:center;min-width:80px;">
+          <div style="font-size:22px;font-weight:700;color:#e2e8f0;">142</div>
+          <div style="font-size:11px;color:#94a3b8;">Total today</div>
+        </div>
+        <div style="background:rgba(74,222,128,0.1);border:1px solid #4ade80;border-radius:8px;padding:10px 16px;text-align:center;min-width:80px;">
+          <div style="font-size:22px;font-weight:700;color:#4ade80;">87%</div>
+          <div style="font-size:11px;color:#94a3b8;">Success rate</div>
+        </div>
+        <div style="background:rgba(96,165,250,0.1);border:1px solid #60a5fa;border-radius:8px;padding:10px 16px;text-align:center;min-width:80px;">
+          <div style="font-size:22px;font-weight:700;color:#60a5fa;">12</div>
+          <div style="font-size:11px;color:#94a3b8;">Running now</div>
+        </div>
+        <div style="background:rgba(248,113,113,0.1);border:1px solid #f87171;border-radius:8px;padding:10px 16px;text-align:center;min-width:80px;">
+          <div style="font-size:22px;font-weight:700;color:#f87171;">18</div>
+          <div style="font-size:11px;color:#94a3b8;">Failed today</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="d" onclick="toggleSelect(this)">
+    <div class="letter">D</div>
+    <div class="content">
+      <h3>B + C combined — KPI cards above timeline bar</h3>
+      <p>KPI cards for instant numbers, bar chart below for time-based trend. Best overall picture for an ops team monitoring job health.</p>
+      <p style="margin-top:8px; color: #4ade80; font-weight: 600;">⭐ Recommended for ops teams</p>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:20px;">You can select multiple. Click to toggle.</p>

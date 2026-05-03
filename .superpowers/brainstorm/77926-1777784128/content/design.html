@@ -1,0 +1,87 @@
+<h2>Namespace combobox — design</h2>
+<p class="subtitle">Two parts: a new backend endpoint + a new React component. Does this look right?</p>
+
+<div class="section">
+  <h3>Backend — new endpoint</h3>
+  <p><code>GET /api/namespaces</code> returns a sorted list of distinct namespace strings from the local DB.</p>
+  <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:16px;font-size:13px;font-family:monospace;margin-top:8px;line-height:1.7">
+    <span style="color:#6366f1">SELECT DISTINCT</span> namespace <span style="color:#6366f1">FROM</span> executions <span style="color:#6366f1">ORDER BY</span> namespace<br>
+    → <span style="color:#059669">["company.finance", "company.ops", "company.team"]</span>
+  </div>
+  <p style="margin-top:8px;font-size:13px;color:#6b7280">Added to <code>ExecutionRepository</code> + a new <code>GET /api/namespaces</code> route in <code>ExecutionResource</code>. No new service class needed.</p>
+</div>
+
+<div class="section">
+  <h3>Frontend — two new files</h3>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px">
+    <div style="flex:1;min-width:200px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:14px;font-size:13px">
+      <div style="font-weight:600;margin-bottom:6px">useNamespaces.ts</div>
+      <div style="color:#6b7280">React Query hook — fetches <code>/api/namespaces</code> once, cached. Returns <code>string[]</code>.</div>
+    </div>
+    <div style="flex:1;min-width:200px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:14px;font-size:13px">
+      <div style="font-weight:600;margin-bottom:6px">NamespaceCombobox.tsx</div>
+      <div style="color:#6b7280">Props: <code>value</code>, <code>onChange</code>. Replaces the plain <code>&lt;input&gt;</code> in <code>ExecutionListPage</code>.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Combobox interaction states</h3>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:8px">
+
+    <div style="flex:1;min-width:200px">
+      <div class="label">Idle (nothing typed)</div>
+      <div style="margin-top:6px;position:relative;display:inline-block;width:100%">
+        <input placeholder="Filter by namespace…" style="border:1px solid #d1d5db;border-radius:6px;padding:6px 10px;font-size:13px;width:100%;box-sizing:border-box" readonly />
+      </div>
+      <p style="font-size:12px;color:#9ca3af;margin-top:4px">Dropdown closed. Table shows all.</p>
+    </div>
+
+    <div style="flex:1;min-width:200px">
+      <div class="label">Typing "comp"</div>
+      <div style="margin-top:6px;position:relative;display:inline-block;width:100%">
+        <input value="comp" style="border:1px solid #6366f1;border-radius:6px;padding:6px 10px;font-size:13px;width:100%;box-sizing:border-box;box-shadow:0 0 0 2px #e0e7ff;outline:none" readonly />
+        <div style="position:absolute;top:34px;left:0;right:0;background:#fff;border:1px solid #e5e7eb;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,.1);z-index:10;overflow:hidden">
+          <div style="padding:6px 10px;font-size:13px;color:#374151">company.finance</div>
+          <div style="padding:6px 10px;font-size:13px;color:#374151">company.ops</div>
+          <div style="padding:6px 10px;font-size:13px;color:#374151">company.team</div>
+        </div>
+      </div>
+      <p style="font-size:12px;color:#9ca3af;margin-top:38px">Dropdown open. Table already filtering on "comp".</p>
+    </div>
+
+    <div style="flex:1;min-width:200px">
+      <div class="label">Hovering a suggestion</div>
+      <div style="margin-top:6px;position:relative;display:inline-block;width:100%">
+        <input value="comp" style="border:1px solid #6366f1;border-radius:6px;padding:6px 10px;font-size:13px;width:100%;box-sizing:border-box;box-shadow:0 0 0 2px #e0e7ff;outline:none" readonly />
+        <div style="position:absolute;top:34px;left:0;right:0;background:#fff;border:1px solid #e5e7eb;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,.1);z-index:10;overflow:hidden">
+          <div style="padding:6px 10px;font-size:13px;color:#374151">company.finance</div>
+          <div style="padding:6px 10px;font-size:13px;color:#111;background:#eef2ff;font-weight:500">company.ops</div>
+          <div style="padding:6px 10px;font-size:13px;color:#374151">company.team</div>
+        </div>
+      </div>
+      <p style="font-size:12px;color:#9ca3af;margin-top:38px">Arrow keys or mouse highlight. Enter or click selects.</p>
+    </div>
+
+    <div style="flex:1;min-width:200px">
+      <div class="label">After selecting "company.ops"</div>
+      <div style="margin-top:6px;position:relative;display:inline-block;width:100%">
+        <input value="company.ops" style="border:1px solid #d1d5db;border-radius:6px;padding:6px 10px;font-size:13px;width:100%;box-sizing:border-box" readonly />
+      </div>
+      <p style="font-size:12px;color:#9ca3af;margin-top:4px">Dropdown closes. Table filtered to exact namespace.</p>
+    </div>
+
+  </div>
+</div>
+
+<div class="section">
+  <h3>Keyboard behaviour</h3>
+  <div style="font-size:13px;display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin-top:8px">
+    <span style="font-family:monospace;background:#f3f4f6;padding:2px 6px;border-radius:4px;align-self:start">↓ / ↑</span><span>Move highlight through suggestions</span>
+    <span style="font-family:monospace;background:#f3f4f6;padding:2px 6px;border-radius:4px;align-self:start">Enter</span><span>Select highlighted suggestion</span>
+    <span style="font-family:monospace;background:#f3f4f6;padding:2px 6px;border-radius:4px;align-self:start">Escape</span><span>Close dropdown, keep current text</span>
+    <span style="font-family:monospace;background:#f3f4f6;padding:2px 6px;border-radius:4px;align-self:start">Click outside</span><span>Close dropdown</span>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:8px">Does this look right? Reply in the terminal to approve or request changes.</p>

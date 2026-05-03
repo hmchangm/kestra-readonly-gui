@@ -1,0 +1,88 @@
+<h2>Namespace filter — which approach?</h2>
+<p class="subtitle">Three ways to replace the free-text input. All three fetch distinct namespaces from the backend on page load.</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:16px;background:#f9fafb;border-bottom:1px solid #e5e7eb">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <div style="position:relative;display:inline-block">
+          <select style="border:1px solid #d1d5db;border-radius:6px;padding:6px 28px 6px 10px;font-size:13px;background:#fff;appearance:auto;min-width:180px">
+            <option>All namespaces</option>
+            <option selected>company.team</option>
+            <option>company.finance</option>
+            <option>company.ops</option>
+          </select>
+        </div>
+        <select style="border:1px solid #d1d5db;border-radius:6px;padding:6px 10px;font-size:13px;background:#fff">
+          <option>All statuses</option>
+        </select>
+        <input type="datetime-local" style="border:1px solid #d1d5db;border-radius:6px;padding:6px 10px;font-size:13px" />
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Plain dropdown</h3>
+      <p>Swap the text input for a <code>&lt;select&gt;</code>. Pick from a list, no typing. Simple, zero dependencies. Can't search if there are many namespaces.</p>
+      <div class="pros-cons" style="margin-top:12px">
+        <div class="pros"><h4>Pros</h4><ul><li>Minimal code</li><li>No ambiguity</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>No type-to-filter</li><li>Awkward with 20+ namespaces</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:16px;background:#f9fafb;border-bottom:1px solid #e5e7eb">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <div style="position:relative;display:inline-block">
+          <input list="ns-list" placeholder="Filter by namespace…" value="company" style="border:1px solid #d1d5db;border-radius:6px;padding:6px 10px;font-size:13px;width:180px" />
+          <datalist id="ns-list">
+            <option value="company.team" />
+            <option value="company.finance" />
+            <option value="company.ops" />
+          </datalist>
+        </div>
+        <select style="border:1px solid #d1d5db;border-radius:6px;padding:6px 10px;font-size:13px;background:#fff">
+          <option>All statuses</option>
+        </select>
+        <input type="datetime-local" style="border:1px solid #d1d5db;border-radius:6px;padding:6px 10px;font-size:13px" />
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Native datalist</h3>
+      <p>Keep the text input, attach an HTML5 <code>&lt;datalist&gt;</code>. Browser shows suggestions as you type. Zero JS, zero dependencies — but browser styling varies and you can't style the dropdown.</p>
+      <div class="pros-cons" style="margin-top:12px">
+        <div class="pros"><h4>Pros</h4><ul><li>Type-to-filter built in</li><li>No library needed</li><li>Still allows free text</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Inconsistent across browsers</li><li>No control over dropdown style</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:16px;background:#f9fafb;border-bottom:1px solid #e5e7eb">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:start">
+        <div style="position:relative;display:inline-block">
+          <input placeholder="Filter by namespace…" value="company" style="border:1px solid #6366f1;border-radius:6px;padding:6px 10px;font-size:13px;width:180px;outline:none;box-shadow:0 0 0 2px #e0e7ff" />
+          <div style="position:absolute;top:34px;left:0;width:220px;background:#fff;border:1px solid #e5e7eb;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,.1);z-index:10;overflow:hidden">
+            <div style="padding:6px 10px;font-size:13px;color:#111;background:#eef2ff;font-weight:500">company.team</div>
+            <div style="padding:6px 10px;font-size:13px;color:#374151">company.finance</div>
+            <div style="padding:6px 10px;font-size:13px;color:#374151">company.ops</div>
+          </div>
+        </div>
+        <select style="border:1px solid #d1d5db;border-radius:6px;padding:6px 10px;font-size:13px;background:#fff">
+          <option>All statuses</option>
+        </select>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Custom combobox</h3>
+      <p>Text input + a custom-rendered dropdown that filters as you type. Consistent styling, keyboard navigable, matches the rest of the UI. Small amount of state to manage in React.</p>
+      <div class="pros-cons" style="margin-top:12px">
+        <div class="pros"><h4>Pros</h4><ul><li>Polished, consistent UI</li><li>Fully styleable</li><li>Keyboard support</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>~60 lines of React state</li><li>Click-outside to close logic</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:24px">Click a card to select, or just reply in the terminal.</p>
