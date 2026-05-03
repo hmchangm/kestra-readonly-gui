@@ -84,6 +84,27 @@ export function ExecutionListPage() {
       {error && <div className="text-red-600">Failed to load executions: {(error as Error).message}</div>}
       {executions && (
         <>
+          {/* Pagination — top */}
+          <div className="flex items-center gap-3 text-sm">
+            <button
+              disabled={page === 0}
+              onClick={() => setPage(p => p - 1)}
+              className="px-3 py-1.5 border rounded disabled:opacity-40"
+            >
+              ← Prev
+            </button>
+            <span className="text-gray-500">
+              Page {page + 1} · {executions.total} total
+            </span>
+            <button
+              disabled={(page + 1) * executions.size >= executions.total}
+              onClick={() => setPage(p => p + 1)}
+              className="px-3 py-1.5 border rounded disabled:opacity-40"
+            >
+              Next →
+            </button>
+          </div>
+
           <div className="overflow-x-auto rounded-lg border">
             <table className="w-full text-sm">
               <thead className="bg-gray-50">
