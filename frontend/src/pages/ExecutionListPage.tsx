@@ -18,6 +18,7 @@ export function ExecutionListPage() {
   const [to, setTo] = useState('')
   const [page, setPage] = useState(0)
   const [retriggerTarget, setRetriggerTarget] = useState<ExecutionRow | null>(null)
+  const [chartsOpen, setChartsOpen] = useState(true)
 
   const { data: summary } = useSummary()
   const { data: executions, isLoading, error } = useExecutions({
@@ -31,22 +32,35 @@ export function ExecutionListPage() {
 
   return (
     <div className="p-6 space-y-6 max-w-7xl mx-auto">
-      <h1 className="text-2xl font-bold text-gray-900">Executions</h1>
-
-      {/* KPI Cards */}
-      <div className="flex gap-4 flex-wrap">
-        <KpiCard label="Total today"  value={summary?.totalToday  ?? '—'} />
-        <KpiCard label="Success rate" value={summary ? `${summary.successRate}%` : '—'} color="green" />
-        <KpiCard label="Running now"  value={summary?.runningNow  ?? '—'} color="blue" />
-        <KpiCard label="Failed today" value={summary?.failedToday ?? '—'} color="red" />
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-gray-900">Executions</h1>
+        <button
+          onClick={() => setChartsOpen(o => !o)}
+          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 border rounded-md px-3 py-1.5"
+        >
+          <span>{chartsOpen ? '▲' : '▼'}</span>
+          <span>{chartsOpen ? 'Hide charts' : 'Show charts'}</span>
+        </button>
       </div>
 
-      {/* Timeline chart */}
-      {summary?.hourly && summary.hourly.length > 0 && (
-        <div className="border rounded-lg p-4">
-          <h2 className="text-sm font-medium text-gray-500 mb-2">Executions last 24h</h2>
-          <TimelineChart data={summary.hourly} />
-        </div>
+      {chartsOpen && (
+        <>
+          {/* KPI Cards */}
+          <div className="flex gap-4 flex-wrap">
+            <KpiCard label="Total today"  value={summary?.totalToday  ?? '—'} />
+            <KpiCard label="Success rate" value={summary ? `${summary.successRate}%` : '—'} color="green" />
+            <KpiCard label="Running now"  value={summary?.runningNow  ?? '—'} color="blue" />
+            <KpiCard label="Failed today" value={summary?.failedToday ?? '—'} color="red" />
+          </div>
+
+          {/* Timeline chart */}
+          {summary?.hourly && summary.hourly.length > 0 && (
+            <div className="border rounded-lg p-4">
+              <h2 className="text-sm font-medium text-gray-500 mb-2">Executions last 24h</h2>
+              <TimelineChart data={summary.hourly} />
+            </div>
+          )}
+        </>
       )}
 
       {/* Filters */}
