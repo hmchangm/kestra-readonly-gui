@@ -18,3 +18,11 @@ CREATE TABLE IF NOT EXISTS kestra_retrigger_audit (
     new_execution_id      VARCHAR(255) NOT NULL,
     input_overrides       TEXT NULL
 );
+
+CREATE TABLE IF NOT EXISTS flows (
+    `key`     VARCHAR(250) NOT NULL PRIMARY KEY,
+    id        VARCHAR(150) NOT NULL,
+    namespace VARCHAR(150) NOT NULL,
+    deleted   BOOLEAN DEFAULT FALSE,
+    `value`   CLOB
+);

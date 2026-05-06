@@ -19,6 +19,7 @@ abstract class DbTestBase {
             }
             conn.createStatement().use { it.execute("DELETE FROM executions") }
             conn.createStatement().use { it.execute("DELETE FROM kestra_retrigger_audit") }
+            conn.createStatement().use { it.execute("DELETE FROM flows") }
         }
     }
 }
