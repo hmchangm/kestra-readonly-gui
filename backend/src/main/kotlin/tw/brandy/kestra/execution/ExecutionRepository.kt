@@ -199,4 +199,28 @@ class ExecutionRepository {
                 }
             }
         }
+
+    fun findTaskLogs(executionId: String, taskRunId: String): List<LogEntry> {
+        val sql = """
+            SELECT level, message, `timestamp`
+            FROM logs
+            WHERE execution_id = ? AND task_run_id = ?
+            ORDER BY `timestamp` ASC
+        """.trimIndent()
+        return ds.connection.use { conn ->
+            conn.prepareStatement(sql).use { ps ->
+                ps.setString(1, executionId)
+                ps.setString(2, taskRunId)
+                ps.executeQuery().use { rs ->
+                    rs.toList { r ->
+                        LogEntry(
+                            timestamp = r.getTimestamp("timestamp")?.toInstant()?.toString() ?: "",
+                            level = r.getString("level") ?: "",
+                            message = r.getString("message") ?: ""
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
