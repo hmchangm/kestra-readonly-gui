@@ -1,3 +1,4 @@
 node_modules/
 .quarkus/
 .superpowers/
+.worktrees/
