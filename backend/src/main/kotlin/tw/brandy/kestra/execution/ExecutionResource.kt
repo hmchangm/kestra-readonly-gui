@@ -38,6 +38,16 @@ class ExecutionResource(
     fun getById(@PathParam("id") id: String): ExecutionDetailRow =
         executionRepository.findById(id) ?: throw NotFoundException("Execution $id not found")
 
+    @GET
+    @Path("/{id}/tasks/{taskRunId}/logs")
+    fun getTaskLogs(
+        @PathParam("id") id: String,
+        @PathParam("taskRunId") taskRunId: String
+    ): List<LogEntry> {
+        executionRepository.findById(id) ?: throw NotFoundException("Execution $id not found")
+        return executionRepository.findTaskLogs(id, taskRunId)
+    }
+
     private fun resolveUsername(): String =
         runCatching { jwt.getClaim<String>("preferred_username") }.getOrNull()
             ?: identity.principal.name

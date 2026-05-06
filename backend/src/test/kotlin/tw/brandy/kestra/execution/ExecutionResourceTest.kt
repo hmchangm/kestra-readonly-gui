@@ -89,4 +89,54 @@ class ExecutionResourceTest {
             .then().statusCode(200)
             .body("newExecutionId", equalTo("new-2"))
     }
+
+    @Test
+    @TestSecurity(user = "john.doe", roles = [])
+    @OidcSecurity(claims = [Claim(key = "preferred_username", value = "john.doe")])
+    fun `GET task logs returns list for known execution`() {
+        `when`(executionRepository.findById("exec-1"))
+            .thenReturn(ExecutionDetailRow("exec-1", "ns", "flow", "SUCCESS", null, null, emptyMap(), emptyList()))
+        `when`(executionRepository.findTaskLogs("exec-1", "tr-1"))
+            .thenReturn(listOf(
+                LogEntry("2026-05-06T10:00:00Z", "INFO", "Starting task"),
+                LogEntry("2026-05-06T10:00:01Z", "ERROR", "Task failed")
+            ))
+
+        given().`when`().get("/api/executions/exec-1/tasks/tr-1/logs")
+            .then().statusCode(200)
+            .body("size()", equalTo(2))
+            .body("[0].level", equalTo("INFO"))
+            .body("[0].message", equalTo("Starting task"))
+            .body("[1].level", equalTo("ERROR"))
+    }
+
+    @Test
+    @TestSecurity(user = "john.doe", roles = [])
+    @OidcSecurity(claims = [Claim(key = "preferred_username", value = "john.doe")])
+    fun `GET task logs returns empty list when execution exists but task has no logs`() {
+        `when`(executionRepository.findById("exec-1"))
+            .thenReturn(ExecutionDetailRow("exec-1", "ns", "flow", "SUCCESS", null, null, emptyMap(), emptyList()))
+        `when`(executionRepository.findTaskLogs("exec-1", "tr-no-logs"))
+            .thenReturn(emptyList())
+
+        given().`when`().get("/api/executions/exec-1/tasks/tr-no-logs/logs")
+            .then().statusCode(200)
+            .body("size()", equalTo(0))
+    }
+
+    @Test
+    @TestSecurity(user = "john.doe", roles = [])
+    @OidcSecurity(claims = [Claim(key = "preferred_username", value = "john.doe")])
+    fun `GET task logs returns 404 when execution does not exist`() {
+        `when`(executionRepository.findById("no-such-exec")).thenReturn(null)
+
+        given().`when`().get("/api/executions/no-such-exec/tasks/tr-1/logs")
+            .then().statusCode(404)
+    }
+
+    @Test
+    fun `GET task logs without token returns 401`() {
+        given().`when`().get("/api/executions/exec-1/tasks/tr-1/logs")
+            .then().statusCode(401)
+    }
 }

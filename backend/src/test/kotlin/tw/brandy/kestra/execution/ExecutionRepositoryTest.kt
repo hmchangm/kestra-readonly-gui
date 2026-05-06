@@ -92,4 +92,66 @@ class ExecutionRepositoryTest : DbTestBase() {
     fun `listNamespaces returns empty list when table is empty`() {
         assertEquals(emptyList<String>(), repo.listNamespaces())
     }
+
+    private fun insertLog(key: String, executionId: String, taskRunId: String, level: String, message: String) {
+        ds.connection.use { conn ->
+            conn.prepareStatement(
+                "INSERT INTO logs (`key`, execution_id, taskrun_id, level, message, `timestamp`) VALUES (?,?,?,?,?,CURRENT_TIMESTAMP)"
+            ).use { ps ->
+                ps.setString(1, key)
+                ps.setString(2, executionId)
+                ps.setString(3, taskRunId)
+                ps.setString(4, level)
+                ps.setString(5, message)
+                ps.executeUpdate()
+            }
+        }
+    }
+
+    @Test
+    fun `findTaskLogs returns logs for matching executionId and taskRunId`() {
+        insertLog("log-1", "exec-1", "tr-1", "INFO", "Starting task")
+        insertLog("log-2", "exec-1", "tr-1", "ERROR", "Task failed")
+        insertLog("log-3", "exec-1", "tr-2", "INFO", "Other task")  // different taskRunId
+
+        val logs = repo.findTaskLogs("exec-1", "tr-1")
+
+        assertEquals(2, logs.size)
+        assertEquals("INFO", logs[0].level)
+        assertEquals("Starting task", logs[0].message)
+        assertEquals("ERROR", logs[1].level)
+    }
+
+    @Test
+    fun `findTaskLogs returns empty list when no logs match`() {
+        val logs = repo.findTaskLogs("exec-nonexistent", "tr-nonexistent")
+        assertEquals(emptyList<LogEntry>(), logs)
+    }
+
+    @Test
+    fun `findTaskLogs orders by timestamp ascending`() {
+        ds.connection.use { conn ->
+            conn.prepareStatement(
+                "INSERT INTO logs (`key`, execution_id, taskrun_id, level, message, `timestamp`) VALUES (?,?,?,?,?,?)"
+            ).use { ps ->
+                ps.setString(1, "log-b"); ps.setString(2, "exec-2"); ps.setString(3, "tr-1")
+                ps.setString(4, "WARN"); ps.setString(5, "Second")
+                ps.setTimestamp(6, java.sql.Timestamp.from(java.time.Instant.parse("2026-05-06T10:00:02Z")))
+                ps.executeUpdate()
+            }
+            conn.prepareStatement(
+                "INSERT INTO logs (`key`, execution_id, taskrun_id, level, message, `timestamp`) VALUES (?,?,?,?,?,?)"
+            ).use { ps ->
+                ps.setString(1, "log-a"); ps.setString(2, "exec-2"); ps.setString(3, "tr-1")
+                ps.setString(4, "INFO"); ps.setString(5, "First")
+                ps.setTimestamp(6, java.sql.Timestamp.from(java.time.Instant.parse("2026-05-06T10:00:01Z")))
+                ps.executeUpdate()
+            }
+        }
+
+        val logs = repo.findTaskLogs("exec-2", "tr-1")
+
+        assertEquals("First", logs[0].message)
+        assertEquals("Second", logs[1].message)
+    }
 }
