@@ -23,7 +23,7 @@ class ExecutionResourceTest {
     @TestSecurity(user = "john.doe", roles = [])
     @OidcSecurity(claims = [Claim(key = "preferred_username", value = "john.doe")])
     fun `GET executions returns page`() {
-        `when`(executionRepository.listExecutions(null, null, null, null, 0, 20))
+        `when`(executionRepository.listExecutions(null, null, null, null, null, 0, 20))
             .thenReturn(ExecutionPage(2, 0, 20, listOf(
                 ExecutionRow("id-1", "ns", "flow", "SUCCESS", null, null),
                 ExecutionRow("id-2", "ns", "flow", "FAILED", null, null)
@@ -33,6 +33,22 @@ class ExecutionResourceTest {
             .then().statusCode(200)
             .body("total", equalTo(2))
             .body("results.size()", equalTo(2))
+    }
+
+    @Test
+    @TestSecurity(user = "john.doe", roles = [])
+    @OidcSecurity(claims = [Claim(key = "preferred_username", value = "john.doe")])
+    fun `GET executions passes flowId query parameter`() {
+        `when`(executionRepository.listExecutions("prod", null, null, null, "daily", 0, 20))
+            .thenReturn(ExecutionPage(1, 0, 20, listOf(
+                ExecutionRow("exec-1", "prod", "daily", "SUCCESS", null, null)
+            )))
+
+        given().queryParam("namespace", "prod").queryParam("flowId", "daily")
+            .`when`().get("/api/executions")
+            .then().statusCode(200)
+            .body("total", equalTo(1))
+            .body("results[0].flowId", equalTo("daily"))
     }
 
     @Test
