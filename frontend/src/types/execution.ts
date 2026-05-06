@@ -54,3 +54,26 @@ export interface RetriggerResponse {
   triggeredBy: string
   triggeredAt: string
 }
+
+export interface FlowRow {
+  namespace: string
+  flowId: string
+  lastRunDate: string | null
+  executionCount: number
+}
+
+export interface FlowDetail {
+  namespace: string
+  flowId: string
+}
+
+export interface FlowInput {
+  id: string
+  type: string
+}
+
+export interface TriggerResponse {
+  newExecutionId: string
+  triggeredBy: string
+  triggeredAt: string
+}
