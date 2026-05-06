@@ -93,3 +93,5 @@ data class KestraExecutionResponse(
 data class RetriggerRequest(
     val overrides: Map<String, Any?> = emptyMap()
 )
+
+data class LogEntry(val timestamp: String, val level: String, val message: String)
