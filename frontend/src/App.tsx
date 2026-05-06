@@ -6,6 +6,8 @@ import { ProtectedRoute } from './auth/ProtectedRoute'
 import { CallbackPage } from './pages/CallbackPage'
 import { ExecutionListPage } from './pages/ExecutionListPage'
 import { ExecutionDetailPage } from './pages/ExecutionDetailPage'
+import { FlowListPage } from './pages/FlowListPage'
+import { FlowDetailPage } from './pages/FlowDetailPage'
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, staleTime: 30_000 } },
@@ -27,6 +29,8 @@ export default function App() {
             <Route path="/login" element={<LoginRedirect />} />
             <Route path="/" element={<ProtectedRoute><ExecutionListPage /></ProtectedRoute>} />
             <Route path="/executions/:id" element={<ProtectedRoute><ExecutionDetailPage /></ProtectedRoute>} />
+            <Route path="/flows" element={<ProtectedRoute><FlowListPage /></ProtectedRoute>} />
+            <Route path="/flows/:namespace/:flowId" element={<ProtectedRoute><FlowDetailPage /></ProtectedRoute>} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </AuthProvider>

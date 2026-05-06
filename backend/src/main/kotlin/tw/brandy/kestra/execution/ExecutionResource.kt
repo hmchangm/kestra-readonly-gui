@@ -26,12 +26,13 @@ class ExecutionResource(
     @GET
     fun list(
         @QueryParam("namespace") namespace: String?,
+        @QueryParam("flowId") flowId: String?,
         @QueryParam("status") status: String?,
         @QueryParam("from") from: String?,
         @QueryParam("to") to: String?,
         @QueryParam("page") @DefaultValue("0") page: Int,
         @QueryParam("size") @DefaultValue("20") size: Int
-    ): ExecutionPage = executionRepository.listExecutions(namespace, status, from, to, page, size)
+    ): ExecutionPage = executionRepository.listExecutions(namespace, status, from, to, flowId, page, size)
 
     @GET
     @Path("/{id}")

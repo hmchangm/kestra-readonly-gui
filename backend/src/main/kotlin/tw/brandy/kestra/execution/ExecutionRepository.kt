@@ -26,6 +26,7 @@ class ExecutionRepository {
     fun listExecutions(
         namespace: String?, status: String?,
         from: String?, to: String?,
+        flowId: String?,
         page: Int, size: Int
     ): ExecutionPage {
         // Build WHERE clause dynamically to avoid H2 IS NULL incompatibility with JDBC setString(i, null)
@@ -35,6 +36,10 @@ class ExecutionRepository {
         if (namespace != null) {
             conditions.add("namespace = ?")
             params.add(namespace)
+        }
+        if (flowId != null) {
+            conditions.add("flow_id = ?")
+            params.add(flowId)
         }
         if (status != null) {
             conditions.add("state_current = ?")

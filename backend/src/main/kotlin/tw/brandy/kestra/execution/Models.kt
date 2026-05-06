@@ -95,3 +95,30 @@ data class RetriggerRequest(
 )
 
 data class LogEntry(val timestamp: String, val level: String, val message: String)
+
+data class FlowRow(
+    val namespace: String,
+    val flowId: String,
+    val lastRunDate: String?,
+    val executionCount: Long
+)
+
+data class FlowDetail(val namespace: String, val flowId: String)
+
+data class FlowInput(val id: String, val type: String)
+
+data class TriggerRequest(val inputs: Map<String, Any?> = emptyMap())
+
+data class TriggerResponse(
+    val newExecutionId: String,
+    val triggeredBy: String,
+    val triggeredAt: String
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class KestraFlowValue(
+    val inputs: List<KestraFlowInput> = emptyList()
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class KestraFlowInput(val id: String = "", val type: String = "")

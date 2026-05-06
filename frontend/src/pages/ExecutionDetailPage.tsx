@@ -5,6 +5,7 @@ import { useTaskLogs } from '../hooks/useTaskLogs'
 import { StatusBadge } from '../components/StatusBadge'
 import { KpiCard } from '../components/KpiCard'
 import { RetriggerModal } from '../components/RetriggerModal'
+import { NavBar } from '../components/NavBar'
 
 function formatDuration(start: string | null, end: string | null): string {
   if (!start || !end) return '—'
@@ -26,12 +27,15 @@ export function ExecutionDetailPage() {
   const [expandedTaskRunId, setExpandedTaskRunId] = useState<string | null>(null)
   const { data: logs, isLoading: logsLoading } = useTaskLogs(id!, expandedTaskRunId)
 
-  if (isLoading) return <div className="p-6 text-gray-500">Loading…</div>
+  if (isLoading) return <><NavBar /><div className="p-6 text-gray-500">Loading…</div></>
   if (error || !execution) return (
-    <div className="p-6">
-      <p className="text-red-600">Execution not found.</p>
-      <Link to="/" className="text-blue-600 text-sm hover:underline mt-2 block">← Back</Link>
-    </div>
+    <>
+      <NavBar />
+      <div className="p-6">
+        <p className="text-red-600">Execution not found.</p>
+        <Link to="/" className="text-blue-600 text-sm hover:underline mt-2 block">← Back</Link>
+      </div>
+    </>
   )
 
   const passed = execution.taskRuns.filter(t => t.state === 'SUCCESS').length
@@ -42,12 +46,14 @@ export function ExecutionDetailPage() {
   }
 
   return (
-    <div className="p-6 space-y-6 max-w-5xl mx-auto">
-      <div className="flex items-center gap-3">
-        <Link to="/" className="text-blue-600 text-sm hover:underline">← Executions</Link>
-        <span className="text-gray-300">/</span>
-        <span className="font-mono text-sm text-gray-600">{execution.id}</span>
-      </div>
+    <>
+      <NavBar />
+      <div className="p-6 space-y-6 max-w-5xl mx-auto">
+        <div className="flex items-center gap-3">
+          <Link to="/" className="text-blue-600 text-sm hover:underline">← Executions</Link>
+          <span className="text-gray-300">/</span>
+          <span className="font-mono text-sm text-gray-600">{execution.id}</span>
+        </div>
 
       {/* KPI cards */}
       <div className="flex gap-4 flex-wrap items-center">
@@ -157,9 +163,10 @@ export function ExecutionDetailPage() {
         </table>
       </div>
 
-      {showRetrigger && (
-        <RetriggerModal execution={execution} onClose={() => setShowRetrigger(false)} />
-      )}
-    </div>
+        {showRetrigger && (
+          <RetriggerModal execution={execution} onClose={() => setShowRetrigger(false)} />
+        )}
+      </div>
+    </>
   )
 }

@@ -4,6 +4,7 @@ import type { ExecutionPage } from '../types/execution'
 
 export interface ExecutionFilters {
   namespace?: string
+  flowId?: string
   status?: string
   from?: string
   to?: string

@@ -38,7 +38,7 @@ class ExecutionRepositoryTest : DbTestBase() {
         insertExecution("exec-2", "prod.etl", "flow-b", "FAILED")
         insertExecution("exec-3", "dev", "flow-c", "RUNNING")
 
-        val page = repo.listExecutions(null, null, null, null, 0, 10)
+        val page = repo.listExecutions(null, null, null, null, null, 0, 10)
 
         assertEquals(3, page.total)
         assertEquals(3, page.results.size)
@@ -49,10 +49,22 @@ class ExecutionRepositoryTest : DbTestBase() {
         insertExecution("exec-1", "prod.etl", "flow-a", "SUCCESS")
         insertExecution("exec-2", "dev", "flow-b", "FAILED")
 
-        val page = repo.listExecutions("prod.etl", null, null, null, 0, 10)
+        val page = repo.listExecutions("prod.etl", null, null, null, null, 0, 10)
 
         assertEquals(1, page.total)
         assertEquals("exec-1", page.results[0].id)
+    }
+
+    @Test
+    fun `listExecutions filters by flow id`() {
+        insertExecution("exec-1", "prod", "daily", "SUCCESS")
+        insertExecution("exec-2", "prod", "adhoc", "SUCCESS")
+
+        val page = repo.listExecutions("prod", null, null, null, "daily", 0, 10)
+
+        assertEquals(1, page.total)
+        assertEquals("exec-1", page.results[0].id)
+        assertEquals("daily", page.results[0].flowId)
     }
 
     @Test
@@ -60,7 +72,7 @@ class ExecutionRepositoryTest : DbTestBase() {
         insertExecution("exec-1", "ns", "flow", "SUCCESS")
         insertExecution("exec-2", "ns", "flow", "FAILED")
 
-        val page = repo.listExecutions(null, "FAILED", null, null, 0, 10)
+        val page = repo.listExecutions(null, "FAILED", null, null, null, 0, 10)
 
         assertEquals(1, page.total)
         assertEquals("exec-2", page.results[0].id)
@@ -70,7 +82,7 @@ class ExecutionRepositoryTest : DbTestBase() {
     fun `listExecutions respects page and size`() {
         repeat(5) { i -> insertExecution("exec-$i", "ns", "flow", "SUCCESS") }
 
-        val page = repo.listExecutions(null, null, null, null, 1, 2)
+        val page = repo.listExecutions(null, null, null, null, null, 1, 2)
 
         assertEquals(5, page.total)
         assertEquals(2, page.results.size)

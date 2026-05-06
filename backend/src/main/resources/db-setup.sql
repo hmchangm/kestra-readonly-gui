@@ -27,3 +27,11 @@ CREATE TABLE IF NOT EXISTS logs (
     message      TEXT,
     `timestamp`  TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS flows (
+    `key`     VARCHAR(250) NOT NULL PRIMARY KEY,
+    id        VARCHAR(150) NOT NULL,
+    namespace VARCHAR(150) NOT NULL,
+    deleted   BOOLEAN DEFAULT FALSE,
+    `value`   CLOB
+);

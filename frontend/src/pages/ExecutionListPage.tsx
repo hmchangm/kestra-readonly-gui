@@ -7,6 +7,7 @@ import { KpiCard } from '../components/KpiCard'
 import { TimelineChart } from '../components/TimelineChart'
 import { RetriggerModal } from '../components/RetriggerModal'
 import { NamespaceCombobox } from '../components/NamespaceCombobox'
+import { NavBar } from '../components/NavBar'
 import type { ExecutionRow, ExecutionState } from '../types/execution'
 
 const STATES: ExecutionState[] = ['CREATED','RUNNING','PAUSED','SUCCESS','WARNING','FAILED','KILLED']
@@ -31,17 +32,19 @@ export function ExecutionListPage() {
   })
 
   return (
-    <div className="p-6 space-y-6 max-w-7xl mx-auto">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Executions</h1>
-        <button
-          onClick={() => setChartsOpen(o => !o)}
-          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 border rounded-md px-3 py-1.5"
-        >
-          <span>{chartsOpen ? '▲' : '▼'}</span>
-          <span>{chartsOpen ? 'Hide charts' : 'Show charts'}</span>
-        </button>
-      </div>
+    <>
+      <NavBar />
+      <div className="p-6 space-y-6 max-w-7xl mx-auto">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-gray-900">Executions</h1>
+          <button
+            onClick={() => setChartsOpen(o => !o)}
+            className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 border rounded-md px-3 py-1.5"
+          >
+            <span>{chartsOpen ? '▲' : '▼'}</span>
+            <span>{chartsOpen ? 'Hide charts' : 'Show charts'}</span>
+          </button>
+        </div>
 
       {chartsOpen && (
         <>
@@ -186,9 +189,10 @@ export function ExecutionListPage() {
         </>
       )}
 
-      {retriggerTarget && (
-        <RetriggerModal execution={retriggerTarget} onClose={() => setRetriggerTarget(null)} />
-      )}
-    </div>
+        {retriggerTarget && (
+          <RetriggerModal execution={retriggerTarget} onClose={() => setRetriggerTarget(null)} />
+        )}
+      </div>
+    </>
   )
 }
