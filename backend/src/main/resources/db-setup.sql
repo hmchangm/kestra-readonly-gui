@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS kestra_retrigger_audit (
 CREATE TABLE IF NOT EXISTS logs (
     `key`        VARCHAR(250) NOT NULL PRIMARY KEY,
     execution_id VARCHAR(100) NOT NULL,
-    task_run_id  VARCHAR(100),
+    taskrun_id   VARCHAR(100),
     level        VARCHAR(20),
     message      TEXT,
     `timestamp`  TIMESTAMP

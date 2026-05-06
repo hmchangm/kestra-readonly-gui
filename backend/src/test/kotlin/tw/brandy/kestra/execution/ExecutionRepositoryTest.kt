@@ -96,7 +96,7 @@ class ExecutionRepositoryTest : DbTestBase() {
     private fun insertLog(key: String, executionId: String, taskRunId: String, level: String, message: String) {
         ds.connection.use { conn ->
             conn.prepareStatement(
-                "INSERT INTO logs (`key`, execution_id, task_run_id, level, message, `timestamp`) VALUES (?,?,?,?,?,CURRENT_TIMESTAMP)"
+                "INSERT INTO logs (`key`, execution_id, taskrun_id, level, message, `timestamp`) VALUES (?,?,?,?,?,CURRENT_TIMESTAMP)"
             ).use { ps ->
                 ps.setString(1, key)
                 ps.setString(2, executionId)
@@ -132,7 +132,7 @@ class ExecutionRepositoryTest : DbTestBase() {
     fun `findTaskLogs orders by timestamp ascending`() {
         ds.connection.use { conn ->
             conn.prepareStatement(
-                "INSERT INTO logs (`key`, execution_id, task_run_id, level, message, `timestamp`) VALUES (?,?,?,?,?,?)"
+                "INSERT INTO logs (`key`, execution_id, taskrun_id, level, message, `timestamp`) VALUES (?,?,?,?,?,?)"
             ).use { ps ->
                 ps.setString(1, "log-b"); ps.setString(2, "exec-2"); ps.setString(3, "tr-1")
                 ps.setString(4, "WARN"); ps.setString(5, "Second")
@@ -140,7 +140,7 @@ class ExecutionRepositoryTest : DbTestBase() {
                 ps.executeUpdate()
             }
             conn.prepareStatement(
-                "INSERT INTO logs (`key`, execution_id, task_run_id, level, message, `timestamp`) VALUES (?,?,?,?,?,?)"
+                "INSERT INTO logs (`key`, execution_id, taskrun_id, level, message, `timestamp`) VALUES (?,?,?,?,?,?)"
             ).use { ps ->
                 ps.setString(1, "log-a"); ps.setString(2, "exec-2"); ps.setString(3, "tr-1")
                 ps.setString(4, "INFO"); ps.setString(5, "First")

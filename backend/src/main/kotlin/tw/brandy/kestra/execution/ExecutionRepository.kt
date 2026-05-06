@@ -204,7 +204,7 @@ class ExecutionRepository {
         val sql = """
             SELECT level, message, `timestamp`
             FROM logs
-            WHERE execution_id = ? AND task_run_id = ?
+            WHERE execution_id = ? AND taskrun_id = ?
             ORDER BY `timestamp` ASC
         """.trimIndent()
         return ds.connection.use { conn ->
