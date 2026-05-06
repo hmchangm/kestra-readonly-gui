@@ -54,3 +54,9 @@ export interface RetriggerResponse {
   triggeredBy: string
   triggeredAt: string
 }
+
+export interface LogEntry {
+  timestamp: string
+  level: string  // INFO | WARN | ERROR | DEBUG | TRACE
+  message: string
+}
