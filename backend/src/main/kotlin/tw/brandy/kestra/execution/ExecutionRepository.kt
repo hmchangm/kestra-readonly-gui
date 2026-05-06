@@ -94,7 +94,7 @@ class ExecutionRepository {
     }
 
     fun findById(id: String): ExecutionDetailRow? {
-        val sql = "SELECT value, state_current, start_date, end_date FROM executions WHERE id = ? AND deleted = false"
+        val sql = "SELECT `value`, state_current, start_date, end_date FROM executions WHERE id = ? AND deleted = false"
         return ds.connection.use { conn ->
             conn.prepareStatement(sql).use { ps ->
                 ps.setString(1, id)
