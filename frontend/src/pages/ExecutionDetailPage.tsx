@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, Fragment } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useExecution } from '../hooks/useExecution'
+import { useTaskLogs } from '../hooks/useTaskLogs'
 import { StatusBadge } from '../components/StatusBadge'
 import { KpiCard } from '../components/KpiCard'
 import { RetriggerModal } from '../components/RetriggerModal'
@@ -12,10 +13,18 @@ function formatDuration(start: string | null, end: string | null): string {
   return s < 60 ? `${s}s` : `${Math.floor(s / 60)}m ${s % 60}s`
 }
 
+function levelClass(level: string): string {
+  if (level === 'ERROR') return 'text-red-400'
+  if (level === 'WARN') return 'text-yellow-400'
+  return 'text-gray-400'
+}
+
 export function ExecutionDetailPage() {
   const { id } = useParams<{ id: string }>()
   const { data: execution, isLoading, error } = useExecution(id!)
   const [showRetrigger, setShowRetrigger] = useState(false)
+  const [expandedTaskRunId, setExpandedTaskRunId] = useState<string | null>(null)
+  const { data: logs, isLoading: logsLoading } = useTaskLogs(id!, expandedTaskRunId)
 
   if (isLoading) return <div className="p-6 text-gray-500">Loading…</div>
   if (error || !execution) return (
@@ -27,6 +36,10 @@ export function ExecutionDetailPage() {
 
   const passed = execution.taskRuns.filter(t => t.state === 'SUCCESS').length
   const failed = execution.taskRuns.filter(t => ['FAILED', 'KILLED'].includes(t.state)).length
+
+  function toggleLogs(taskRunId: string) {
+    setExpandedTaskRunId(prev => prev === taskRunId ? null : taskRunId)
+  }
 
   return (
     <div className="p-6 space-y-6 max-w-5xl mx-auto">
@@ -85,24 +98,61 @@ export function ExecutionDetailPage() {
               <th className="px-4 py-2 text-left">Start</th>
               <th className="px-4 py-2 text-left">End</th>
               <th className="px-4 py-2 text-left">Duration</th>
+              <th className="px-4 py-2"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
-            {execution.taskRuns.map(tr => (
-              <tr key={tr.id} className="hover:bg-gray-50">
-                <td className="px-4 py-2.5 font-mono text-xs">{tr.taskId}</td>
-                <td className="px-4 py-2.5"><StatusBadge state={tr.state} /></td>
-                <td className="px-4 py-2.5 text-gray-500 text-xs">
-                  {tr.startDate ? new Date(tr.startDate).toLocaleString() : '—'}
-                </td>
-                <td className="px-4 py-2.5 text-gray-500 text-xs">
-                  {tr.endDate ? new Date(tr.endDate).toLocaleString() : '—'}
-                </td>
-                <td className="px-4 py-2.5 text-gray-500 text-xs">
-                  {formatDuration(tr.startDate, tr.endDate)}
-                </td>
-              </tr>
-            ))}
+            {execution.taskRuns.map(tr => {
+              const isExpanded = expandedTaskRunId === tr.id
+              return (
+                <Fragment key={tr.id}>
+                  <tr className={`hover:bg-gray-50 ${isExpanded ? 'bg-yellow-50 border-l-2 border-yellow-300' : ''}`}>
+                    <td className="px-4 py-2.5 font-mono text-xs">{tr.taskId}</td>
+                    <td className="px-4 py-2.5"><StatusBadge state={tr.state} /></td>
+                    <td className="px-4 py-2.5 text-gray-500 text-xs">
+                      {tr.startDate ? new Date(tr.startDate).toLocaleString() : '—'}
+                    </td>
+                    <td className="px-4 py-2.5 text-gray-500 text-xs">
+                      {tr.endDate ? new Date(tr.endDate).toLocaleString() : '—'}
+                    </td>
+                    <td className="px-4 py-2.5 text-gray-500 text-xs">
+                      {formatDuration(tr.startDate, tr.endDate)}
+                    </td>
+                    <td className="px-4 py-2.5">
+                      <button
+                        onClick={() => toggleLogs(tr.id)}
+                        className="text-xs text-blue-600 hover:text-blue-800 whitespace-nowrap"
+                      >
+                        {isExpanded ? '▼ logs' : '▶ logs'}
+                      </button>
+                    </td>
+                  </tr>
+                  {isExpanded && (
+                    <tr data-testid="log-panel">
+                      <td colSpan={6} className="p-0">
+                        <div className="bg-gray-900 text-gray-200 font-mono text-xs leading-relaxed p-3 max-h-64 overflow-y-auto">
+                          {logsLoading && (
+                            <div className="text-gray-500 text-center py-4">Loading…</div>
+                          )}
+                          {!logsLoading && (!logs || logs.length === 0) && (
+                            <div className="text-gray-500 text-center py-4">No logs for this task run.</div>
+                          )}
+                          {!logsLoading && logs && logs.map((entry, i) => (
+                            <div key={i}>
+                              <span className="text-gray-600">{entry.timestamp}</span>
+                              {' '}
+                              <span className={`${levelClass(entry.level)} font-semibold`}>{entry.level.padEnd(5)}</span>
+                              {' '}
+                              {entry.message}
+                            </div>
+                          ))}
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
+              )
+            })}
           </tbody>
         </table>
       </div>
