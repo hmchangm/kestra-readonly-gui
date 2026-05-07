@@ -94,6 +94,12 @@ data class RetriggerRequest(
     val overrides: Map<String, Any?> = emptyMap()
 )
 
+data class CancelResponse(
+    val executionId: String,
+    val cancelledBy: String,
+    val cancelledAt: String
+)
+
 data class LogEntry(val timestamp: String, val level: String, val message: String)
 
 data class FlowRow(

@@ -13,6 +13,7 @@ import jakarta.inject.Inject
 class ExecutionResource(
     private val executionRepository: ExecutionRepository,
     private val retriggerService: RetriggerService,
+    private val cancelService: CancelService,
     private val identity: SecurityIdentity
 ) {
 
@@ -65,4 +66,9 @@ class ExecutionResource(
     fun retriggerNoBody(@PathParam("id") id: String): RetriggerResponse {
         return retriggerService.retrigger(id, resolveUsername(), emptyMap())
     }
+
+    @POST
+    @Path("/{id}/cancel")
+    fun cancel(@PathParam("id") id: String): CancelResponse =
+        cancelService.cancel(id, resolveUsername())
 }
