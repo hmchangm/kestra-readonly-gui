@@ -64,6 +64,13 @@ describe('ExecutionDetailPage log view', () => {
     expect(screen.getByText('Connection refused')).toBeInTheDocument()
   })
 
+  it('renders log timestamps with readable contrast on the dark panel', () => {
+    wrap(<ExecutionDetailPage />)
+    fireEvent.click(screen.getAllByText('▶ logs')[0])
+
+    expect(screen.getByText('2026-05-06T10:00:00Z')).toHaveClass('text-gray-400')
+  })
+
   it('clicking the same toggle again collapses the panel', () => {
     wrap(<ExecutionDetailPage />)
     fireEvent.click(screen.getAllByText('▶ logs')[0])

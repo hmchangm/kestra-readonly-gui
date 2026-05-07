@@ -155,7 +155,7 @@ export function ExecutionDetailPage() {
                           )}
                           {!logsLoading && logs && logs.map((entry, i) => (
                             <div key={i}>
-                              <span className="text-gray-600">{entry.timestamp}</span>
+                              <span className="text-gray-400">{entry.timestamp}</span>
                               {' '}
                               <span className={`${levelClass(entry.level)} font-semibold`}>{entry.level.padEnd(5)}</span>
                               {' '}
