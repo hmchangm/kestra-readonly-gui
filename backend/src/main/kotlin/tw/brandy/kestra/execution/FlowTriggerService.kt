@@ -32,7 +32,7 @@ class FlowTriggerService(
         }
 
         try {
-            auditRepository.writeAudit(triggeredBy, "$namespace/$flowId", kestraResponse.id, inputs.ifEmpty { null })
+            auditRepository.writeAudit("TRIGGER", triggeredBy, "$namespace/$flowId", kestraResponse.id, inputs.ifEmpty { null })
         } catch (e: Exception) {
             log.errorf(e, "Audit write failed: flow=%s/%s newId=%s", namespace, flowId, kestraResponse.id)
         }

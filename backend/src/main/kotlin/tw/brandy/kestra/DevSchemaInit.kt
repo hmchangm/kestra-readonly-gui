@@ -24,25 +24,23 @@ class DevSchemaInit(private val ds: DataSource) {
                     conn.createStatement().use { it.execute(stmt) }
                 }
             } else {
-                log.info("Dev mode (MySQL): ensuring kestra_retrigger_audit table exists")
+                log.info("Dev mode (MySQL): ensuring kestra_execution_audit table exists")
                 try {
                     conn.createStatement().use {
                         it.execute("""
-                            CREATE TABLE IF NOT EXISTS kestra_retrigger_audit (
-                                id                    BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                triggered_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                triggered_by          VARCHAR(255) NOT NULL,
-                                original_execution_id VARCHAR(255) NOT NULL,
-                                new_execution_id      VARCHAR(255) NOT NULL,
-                                input_overrides       TEXT NULL
+                            CREATE TABLE IF NOT EXISTS kestra_execution_audit (
+                                id               BIGINT AUTO_INCREMENT PRIMARY KEY,
+                                acted_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                acted_by         VARCHAR(255) NOT NULL,
+                                action           VARCHAR(20)  NOT NULL,
+                                execution_id     VARCHAR(255) NOT NULL,
+                                new_execution_id VARCHAR(255) NULL,
+                                input_overrides  TEXT NULL
                             )
                         """.trimIndent())
                     }
-                    conn.createStatement().use {
-                        it.execute("ALTER TABLE kestra_retrigger_audit ADD COLUMN IF NOT EXISTS input_overrides TEXT NULL")
-                    }
                 } catch (e: Exception) {
-                    log.warn("Could not create kestra_retrigger_audit table (run migration manually): ${e.message}")
+                    log.warn("Could not create kestra_execution_audit table (run migration manually): ${e.message}")
                 }
             }
         }
