@@ -5,6 +5,7 @@ import { useTaskLogs } from '../hooks/useTaskLogs'
 import { StatusBadge } from '../components/StatusBadge'
 import { KpiCard } from '../components/KpiCard'
 import { RetriggerModal } from '../components/RetriggerModal'
+import { CancelModal, CANCELLABLE_STATES } from '../components/CancelModal'
 import { NavBar } from '../components/NavBar'
 
 function formatDuration(start: string | null, end: string | null): string {
@@ -24,6 +25,7 @@ export function ExecutionDetailPage() {
   const { id } = useParams<{ id: string }>()
   const { data: execution, isLoading, error } = useExecution(id!)
   const [showRetrigger, setShowRetrigger] = useState(false)
+  const [showCancel, setShowCancel] = useState(false)
   const [expandedTaskRunId, setExpandedTaskRunId] = useState<string | null>(null)
   const { data: logs, isLoading: logsLoading } = useTaskLogs(id!, expandedTaskRunId)
 
@@ -64,6 +66,14 @@ export function ExecutionDetailPage() {
           <StatusBadge state={execution.state} />
           <div className="text-xs text-gray-500 mt-1">Final state</div>
         </div>
+        {CANCELLABLE_STATES.has(execution.state) && (
+          <button
+            onClick={() => setShowCancel(true)}
+            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 text-sm"
+          >
+            Cancel
+          </button>
+        )}
         <button
           onClick={() => setShowRetrigger(true)}
           className="ml-auto px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
@@ -165,6 +175,9 @@ export function ExecutionDetailPage() {
 
         {showRetrigger && (
           <RetriggerModal execution={execution} onClose={() => setShowRetrigger(false)} />
+        )}
+        {showCancel && (
+          <CancelModal execution={execution} onClose={() => setShowCancel(false)} />
         )}
       </div>
     </>
