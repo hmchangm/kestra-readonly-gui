@@ -13,12 +13,14 @@ class AuditRepositoryTest : DbTestBase() {
     lateinit var repo: AuditRepository
 
     @Test
-    fun `writeAudit inserts a row`() {
-        repo.writeAudit("john.doe", "orig-123", "new-456")
+    fun `writeAudit inserts a row with action and execution id`() {
+        repo.writeAudit("RETRIGGER", "john.doe", "orig-123", "new-456")
 
         ds.connection.use { conn ->
             conn.createStatement().use { stmt ->
-                val rs = stmt.executeQuery("SELECT COUNT(*) FROM kestra_retrigger_audit WHERE triggered_by='john.doe'")
+                val rs = stmt.executeQuery(
+                    "SELECT COUNT(*) FROM kestra_execution_audit WHERE acted_by='john.doe'"
+                )
                 rs.next()
                 assertEquals(1, rs.getInt(1))
             }
@@ -26,16 +28,17 @@ class AuditRepositoryTest : DbTestBase() {
     }
 
     @Test
-    fun `writeAudit stores correct execution IDs`() {
-        repo.writeAudit("jane", "orig-aaa", "new-bbb")
+    fun `writeAudit stores action and execution ids correctly`() {
+        repo.writeAudit("RETRIGGER", "jane", "orig-aaa", "new-bbb")
 
         ds.connection.use { conn ->
             conn.createStatement().use { stmt ->
                 val rs = stmt.executeQuery(
-                    "SELECT original_execution_id, new_execution_id FROM kestra_retrigger_audit WHERE triggered_by='jane'"
+                    "SELECT action, execution_id, new_execution_id FROM kestra_execution_audit WHERE acted_by='jane'"
                 )
                 rs.next()
-                assertEquals("orig-aaa", rs.getString("original_execution_id"))
+                assertEquals("RETRIGGER", rs.getString("action"))
+                assertEquals("orig-aaa", rs.getString("execution_id"))
                 assertEquals("new-bbb", rs.getString("new_execution_id"))
             }
         }
@@ -43,12 +46,12 @@ class AuditRepositoryTest : DbTestBase() {
 
     @Test
     fun `writeAudit with overrides stores JSON in input_overrides column`() {
-        repo.writeAudit("alice", "orig-x", "new-y", mapOf("date" to "2026-05-02"))
+        repo.writeAudit("RETRIGGER", "alice", "orig-x", "new-y", mapOf("date" to "2026-05-02"))
 
         ds.connection.use { conn ->
             conn.createStatement().use { stmt ->
                 val rs = stmt.executeQuery(
-                    "SELECT input_overrides FROM kestra_retrigger_audit WHERE triggered_by='alice'"
+                    "SELECT input_overrides FROM kestra_execution_audit WHERE acted_by='alice'"
                 )
                 rs.next()
                 val json = rs.getString("input_overrides")
@@ -59,15 +62,17 @@ class AuditRepositoryTest : DbTestBase() {
     }
 
     @Test
-    fun `writeAudit with null overrides stores NULL in input_overrides column`() {
-        repo.writeAudit("bob", "orig-z", "new-w", null)
+    fun `writeAudit for CANCEL stores null for new_execution_id and input_overrides`() {
+        repo.writeAudit("CANCEL", "bob", "orig-z")
 
         ds.connection.use { conn ->
             conn.createStatement().use { stmt ->
                 val rs = stmt.executeQuery(
-                    "SELECT input_overrides FROM kestra_retrigger_audit WHERE triggered_by='bob'"
+                    "SELECT action, new_execution_id, input_overrides FROM kestra_execution_audit WHERE acted_by='bob'"
                 )
                 rs.next()
+                assertEquals("CANCEL", rs.getString("action"))
+                assertNull(rs.getString("new_execution_id"))
                 assertNull(rs.getString("input_overrides"))
             }
         }

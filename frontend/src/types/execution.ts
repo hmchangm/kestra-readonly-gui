@@ -83,3 +83,9 @@ export interface TriggerResponse {
   triggeredBy: string
   triggeredAt: string
 }
+
+export interface CancelResponse {
+  executionId: string
+  cancelledBy: string
+  cancelledAt: string
+}

@@ -45,7 +45,7 @@ class RetriggerService(
 
         val auditOverrides = overrides.ifEmpty { null }
         try {
-            auditRepository.writeAudit(triggeredBy, executionId, kestraResponse.id, auditOverrides)
+            auditRepository.writeAudit("RETRIGGER", triggeredBy, executionId, kestraResponse.id, auditOverrides)
         } catch (e: Exception) {
             log.errorf(e, "Audit write failed: originalId=%s newId=%s", executionId, kestraResponse.id)
         }

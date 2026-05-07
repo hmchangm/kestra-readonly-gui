@@ -155,4 +155,48 @@ class ExecutionResourceTest {
         given().`when`().get("/api/executions/exec-1/tasks/tr-1/logs")
             .then().statusCode(401)
     }
+
+    @InjectMock
+    lateinit var cancelService: CancelService
+
+    @Test
+    @TestSecurity(user = "john.doe", roles = [])
+    @OidcSecurity(claims = [Claim(key = "preferred_username", value = "john.doe")])
+    fun `POST cancel returns 200 with cancelledBy`() {
+        `when`(cancelService.cancel("exec-1", "john.doe"))
+            .thenReturn(CancelResponse("exec-1", "john.doe", "2026-05-07T10:00:00Z"))
+
+        given().`when`().post("/api/executions/exec-1/cancel")
+            .then().statusCode(200)
+            .body("executionId", equalTo("exec-1"))
+            .body("cancelledBy", equalTo("john.doe"))
+    }
+
+    @Test
+    @TestSecurity(user = "john.doe", roles = [])
+    @OidcSecurity(claims = [Claim(key = "preferred_username", value = "john.doe")])
+    fun `POST cancel returns 404 when execution not found`() {
+        `when`(cancelService.cancel("missing", "john.doe"))
+            .thenThrow(jakarta.ws.rs.NotFoundException("not found"))
+
+        given().`when`().post("/api/executions/missing/cancel")
+            .then().statusCode(404)
+    }
+
+    @Test
+    @TestSecurity(user = "john.doe", roles = [])
+    @OidcSecurity(claims = [Claim(key = "preferred_username", value = "john.doe")])
+    fun `POST cancel returns 400 when state not cancellable`() {
+        `when`(cancelService.cancel("exec-done", "john.doe"))
+            .thenThrow(jakarta.ws.rs.BadRequestException("not cancellable"))
+
+        given().`when`().post("/api/executions/exec-done/cancel")
+            .then().statusCode(400)
+    }
+
+    @Test
+    fun `POST cancel without token returns 401`() {
+        given().`when`().post("/api/executions/exec-1/cancel")
+            .then().statusCode(401)
+    }
 }

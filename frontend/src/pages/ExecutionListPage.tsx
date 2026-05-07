@@ -6,6 +6,7 @@ import { StatusBadge } from '../components/StatusBadge'
 import { KpiCard } from '../components/KpiCard'
 import { TimelineChart } from '../components/TimelineChart'
 import { RetriggerModal } from '../components/RetriggerModal'
+import { CancelModal, CANCELLABLE_STATES } from '../components/CancelModal'
 import { NamespaceCombobox } from '../components/NamespaceCombobox'
 import { NavBar } from '../components/NavBar'
 import type { ExecutionRow, ExecutionState } from '../types/execution'
@@ -19,6 +20,7 @@ export function ExecutionListPage() {
   const [to, setTo] = useState('')
   const [page, setPage] = useState(0)
   const [retriggerTarget, setRetriggerTarget] = useState<ExecutionRow | null>(null)
+  const [cancelTarget, setCancelTarget] = useState<ExecutionRow | null>(null)
   const [chartsOpen, setChartsOpen] = useState(true)
 
   const { data: summary } = useSummary()
@@ -152,7 +154,15 @@ export function ExecutionListPage() {
                     <td className="px-4 py-3 text-gray-500 text-xs">
                       {exec.endDate ? new Date(exec.endDate).toLocaleString() : '—'}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 flex gap-2">
+                      {CANCELLABLE_STATES.has(exec.state) && (
+                        <button
+                          onClick={() => setCancelTarget(exec)}
+                          className="px-2.5 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700"
+                        >
+                          Cancel
+                        </button>
+                      )}
                       <button
                         onClick={() => setRetriggerTarget(exec)}
                         className="px-2.5 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700"
@@ -191,6 +201,9 @@ export function ExecutionListPage() {
 
         {retriggerTarget && (
           <RetriggerModal execution={retriggerTarget} onClose={() => setRetriggerTarget(null)} />
+        )}
+        {cancelTarget && (
+          <CancelModal execution={cancelTarget} onClose={() => setCancelTarget(null)} />
         )}
       </div>
     </>

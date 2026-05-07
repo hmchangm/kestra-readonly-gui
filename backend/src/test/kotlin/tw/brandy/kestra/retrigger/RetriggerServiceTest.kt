@@ -47,7 +47,7 @@ class RetriggerServiceTest {
         assertEquals("new-99", result.newExecutionId)
         assertEquals("orig-1", result.originalExecutionId)
         assertEquals("john.doe", result.triggeredBy)
-        verify(auditRepo).writeAudit("john.doe", "orig-1", "new-99", null)
+        verify(auditRepo).writeAudit("RETRIGGER", "john.doe", "orig-1", "new-99", null)
     }
 
     @Test
@@ -69,7 +69,7 @@ class RetriggerServiceTest {
         `when`(kestraClient.createExecution(anyString(), anyString(), anyList()))
             .thenReturn(KestraExecutionResponse("new-77"))
         doThrow(RuntimeException("DB down")).`when`(auditRepo)
-            .writeAudit(anyString(), anyString(), anyString(), org.mockito.ArgumentMatchers.any())
+            .writeAudit(anyString(), anyString(), anyString(), org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.any())
 
         val result = service.retrigger("orig-2", "user")
 
@@ -90,7 +90,7 @@ class RetriggerServiceTest {
 
         assertEquals("new-100", result.newExecutionId)
         verify(kestraClient).createExecution(anyString(), anyString(), anyList())
-        verify(auditRepo).writeAudit("john.doe", "orig-3", "new-100", overrides)
+        verify(auditRepo).writeAudit("RETRIGGER", "john.doe", "orig-3", "new-100", overrides)
     }
 
     @Test
@@ -105,6 +105,6 @@ class RetriggerServiceTest {
         service.retrigger("orig-4", "john.doe", emptyMap())
 
         verify(kestraClient).createExecution(anyString(), anyString(), anyList())
-        verify(auditRepo).writeAudit("john.doe", "orig-4", "new-101", null)
+        verify(auditRepo).writeAudit("RETRIGGER", "john.doe", "orig-4", "new-101", null)
     }
 }

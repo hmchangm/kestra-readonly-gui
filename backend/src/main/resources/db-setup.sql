@@ -10,13 +10,14 @@ CREATE TABLE IF NOT EXISTS executions (
     end_date      TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS kestra_retrigger_audit (
-    id                    BIGINT AUTO_INCREMENT PRIMARY KEY,
-    triggered_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    triggered_by          VARCHAR(255) NOT NULL,
-    original_execution_id VARCHAR(255) NOT NULL,
-    new_execution_id      VARCHAR(255) NOT NULL,
-    input_overrides       TEXT NULL
+CREATE TABLE IF NOT EXISTS kestra_execution_audit (
+    id               BIGINT AUTO_INCREMENT PRIMARY KEY,
+    acted_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    acted_by         VARCHAR(255) NOT NULL,
+    action           VARCHAR(20)  NOT NULL,
+    execution_id     VARCHAR(255) NOT NULL,
+    new_execution_id VARCHAR(255) NULL,
+    input_overrides  TEXT NULL
 );
 
 CREATE TABLE IF NOT EXISTS logs (
